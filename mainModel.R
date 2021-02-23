@@ -12,9 +12,10 @@ library(varhandle)
 require(MCMCvis)
 library(cowplot)
 
+# Read in processed data
 datComb <- readRDS("dataProcessing/cleanedData.RDS")
 
-# Individual datasets required for plotting later
+# Subset data by study, required for plotting later
 datChan <- subset(datComb, author == "chan")
 datZhou_hku1 <- subset(datComb, author == "datZhou_hku1")
 datZhou_oc43 <- subset(datComb, author == "datZhou_oc43")
@@ -150,6 +151,7 @@ seropos_est[i] <- ifelse(age[i] < cutoffShao,
 
 ## priors
 
+# FOI priors by study
 lambdaShao_22 ~ dgamma(1.2,4)
 lambdaZhou_22 ~ dgamma(1.2,4)
 lambdaCav ~ dgamma(1.2,4)
@@ -161,18 +163,21 @@ lambdaSar ~ dgamma(1.2,4)
 lambdaZhou_nl ~ dgamma(1.2,4)
 lambdaShao_nl ~ dgamma(1.2,4)
 
+# Alpha priors (relative change in FOI)
 alphaShao ~ dgamma(5,5)
 alphaZhou ~ dgamma(5,5)
 alphaCavMonto ~ dgamma(5,5)
 alphaChan ~ dgamma(5,5)
 alphaSar ~ dgamma(5,5)
 
+# Priors for age at cut-off
 cutoffShao ~ dunif(0,20)
 cutoffZhou ~ dunif(0,20)
 cutoffCavMonto ~ dunif(0,20)
 cutoffChan ~ dunif(0,20)
 cutoffSar ~ dunif(0,20)
 
+# Prior for delta (waning)
 delta ~ dunif(0,5) #uniformative prior
 
 }"
@@ -189,6 +194,7 @@ jdat <- list(n.pos = datComb$N_positive,
              age = datComb$midpoint)
 
 jmod <- jags.model(textConnection(jcode), data = jdat, n.chains = 4, n.adapt = 30000)
+
 update(jmod)
 
 jpos <- coda.samples(jmod, c("lambdaShao_22",
@@ -357,16 +363,18 @@ paramDat <- data.frame(paramVector, varOutput)
 
 ager <- 0:80
 
-numSamples <- 1000
+numSamples <- 1000 # Number of samples taken from mcmc chain
 
-foiVector <- paramVector[1:10]
-foiEstimates <- paramEstimates[1:10]
+
+foiVector <- paramVector[1:10] # FOI names for each study
+foiEstimates <- paramEstimates[1:10] # FOI point estimates for each study
   
 alphaVector <- c("alphaShao", "alphaZhou", "alphaCavMonto", "alphaChan", "alphaZhou", "alphaZhou", "alphaCavMonto", "alphaSar", "alphaZhou", "alphaShao")
 alphaEstimates <- paramEstimates[12:21]
 
 cutoffEstimates <- paramEstimates[22:31]
 
+## Loop through all studies in turn
 for(ii in 1:length(foiVector)){
   outDf <- matrix(NA,nrow=numSamples, ncol = length(ager))
   foiStudy <- foiVector[ii]
@@ -377,13 +385,17 @@ for(ii in 1:length(foiVector)){
   agey <- 0:cutoff
   ageo <- (cutoff+1):80
 
+  ## Sample from mcmc chain to get 95% credible intervals
   for (kk in 1:numSamples) {
+    
+    # Specify random number to sample from mcmc chain for parameter estimates
     randomNumber <- floor(runif(1, min = 1, max = nrow(mcmcMatrix)))
     
     deltaSample <- mcmcMatrix[randomNumber, "delta"]
     lambdaYoungSample <- mcmcMatrix[randomNumber, foiStudy]
     alphaSample <- mcmcMatrix[randomNumber, alphaStudy]
     
+    # Run the model with new esitmates
     newRowYoung <- (lambdaYoungSample / (lambdaYoungSample+deltaSample)) *(1 - exp(-agey*(lambdaYoungSample+deltaSample)))
     
     valueAtCutoff <- (lambdaYoungSample / (lambdaYoungSample+deltaSample))* (1-exp(-(lambdaYoungSample +deltaSample)*cutoff))
@@ -392,33 +404,29 @@ for(ii in 1:length(foiVector)){
     
     newRow <- c(newRowYoung, newRowOld)
     
+    # Add these to a new matrix, where each row is a sample, and each column is an age
     outDf[kk,] <- newRow 
     
   }
   
-  
-  # for each row in the matrix get quantiles
+  # for each column in the matrix get quantiles by age
   quantileMatrix <- matrix(NA,nrow=ncol(outDf), ncol = 3)
   for(jj in 1:ncol(outDf)){
     quantiles <- outDf[,jj] %>% quantile(probs=c(.5,.025,.975))
     quantileMatrix[jj,] <- quantiles
   }
   
-  
+  ## Run model using point estimates for overall model result 
   lambdaYoung <- foiEstimates[[ii]][1]
   delta <- deltaPointEst[1]
   alpha <- alphaEstimates[[ii]][1]
   
   meanYoung <- (lambdaYoung / (lambdaYoung+delta)) *(1 - exp(-agey*(lambdaYoung+delta)))
-  
   meanCutoff <- (lambdaYoung / (lambdaYoung+delta))* (1-exp(-(lambdaYoung +delta)*cutoff))
-  
   meanOld <- (meanCutoff - (lambdaYoung*alpha) / ((lambdaYoung*alpha)+delta) ) * exp(-((lambdaYoung*alpha) + delta)*(ageo-cutoff)) + (lambdaYoung*alpha) / ((lambdaYoung*alpha)+delta)
-  
   mean <- c(meanYoung, meanOld)
   
-  
-  # Create a dataframe for plotting
+  # Create a dataframe for plotting, one for each study
   df_upperLower <- data.frame(
     midpoint = ager,
     mean = mean,

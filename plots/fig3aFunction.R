@@ -177,13 +177,13 @@ createFig3a <- function(cutoff, cutoffUpper, cutoffLower,delta,deltaUpper,deltaL
   
   fig3a = ggplot(outDf, aes(x=foi)) +
     geom_line(aes(y=revCatFoi, colour = "Reverse catalytic & age varying FOI"), size=0.8) +
-    geom_ribbon(alpha=0.4, aes(ymin = lower, ymax = upper), fill = "#212B31") +
+    geom_ribbon(alpha=0.4, aes(ymin = lower, ymax = upper), fill = "#52796f") +
     geom_line(aes(y=cat, colour = "Catalytic"), size=0.8)  +
     geom_line(aes(y=revCat, colour = "Reverse Catalytic"), size=0.8) +
-    geom_ribbon(data = outDf, alpha=0.4, aes(ymin = revCatLower, ymax = revCatUpper), fill = "#52796f")+
+    geom_ribbon(data = outDf, alpha=0.4, aes(ymin = revCatLower, ymax = revCatUpper), fill = "#003366")+
     scale_colour_manual(name = "", 
-                        breaks = c("Catalytic", "Reverse Catalytic", "Reverse catalytic & age varying FOI"),
-                        values = c("#6a040f", "#52796f","#212B31")) + 
+                        breaks = c("Catalytic", "Reverse catalytic & age varying FOI","Reverse Catalytic"),
+                        values = c("#6a040f", "#52796f","#003366")) + 
     xlab("Force of Infection") + ylab("Proportion seropositive at age 30") +
     theme_bw() +
     theme(legend.position = "bottom")

@@ -19,42 +19,52 @@ jcode <- "model{
 for (i in 1:6){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
 seropos_est[i] = (lambdaShao_22 / (lambdaShao_22 + delta)) * (1-exp(-(lambdaShao_22+delta)*age[i])) 
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 7:13){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
-seropos_est[i] = (lambdaZhou_22 / (lambdaZhou_22 + delta)) * (1-exp(-(lambdaZhou_22+delta)*age[i])) 
+seropos_est[i] = (lambdaZhou_22 / (lambdaZhou_22 + delta)) * (1-exp(-(lambdaZhou_22+delta)*age[i]))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 14:19){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
 seropos_est[i] = (lambdaCav / (lambdaCav + delta)) * (1-exp(-(lambdaCav+delta)*age[i]))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 20:26){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
 seropos_est[i] = (lambdaChan / (lambdaChan + delta)) * (1-exp(-(lambdaChan+delta)*age[i]))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 27:33){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
 seropos_est[i] = (lambdaZhou_hk / (lambdaZhou_hk + delta)) * (1-exp(-(lambdaZhou_hk+delta)*age[i]))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 34:40){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
 seropos_est[i] = (lambdaZhou_oc / (lambdaZhou_oc + delta)) * (1-exp(-(lambdaZhou_oc+delta)*age[i]))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 41:46){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
 seropos_est[i] = (lambdaMonto / (lambdaMonto + delta)) * (1-exp(-(lambdaMonto+delta)*age[i]))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 47:50){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
 seropos_est[i] = (lambdaSar / (lambdaSar + delta)) * (1-exp(-(lambdaSar+delta)*age[i])) 
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 51:57){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
 seropos_est[i] = (lambdaZhou_nl / (lambdaZhou_nl + delta)) * (1-exp(-(lambdaZhou_nl+delta)*age[i])) 
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 58:63){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
 seropos_est[i] = (lambdaShao_nl / (lambdaShao_nl + delta)) * (1-exp(-(lambdaShao_nl+delta)*age[i])) 
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 
 
@@ -74,7 +84,7 @@ delta ~ dunif(0,5)
 
 }"
 
-paramVector = c("lambdaShao_22", "lambdaZhou_22", "lambdaCav", "lambdaChan", "lambdaZhou_hk", "lambdaZhou_oc", "lambdaMonto", "lambdaSar", "lambdaZhou_nl", "lambdaShao_nl","delta")
+paramVector = c("lambdaShao_22", "lambdaZhou_22", "lambdaCav", "lambdaChan", "lambdaZhou_hk", "lambdaZhou_oc", "lambdaMonto", "lambdaSar", "lambdaZhou_nl", "lambdaShao_nl","delta","loglik")
 
 
 mcmc.length=50000
@@ -84,6 +94,16 @@ jdat <- list(n.pos= datComb$N_positive,
 
 jmod = jags.model(textConnection(jcode), data=jdat, n.chains=4,n.adapt = 15000)
 jpos = coda.samples(jmod, paramVector, n.iter=mcmc.length)
+
+# test <- jags.samples(jmod, c("deviance", "WAIC"), type="mean", n.iter=mcmc.length)
+# 
+# jpos_matrix <- as.matrix(jpos)
+# jpos_array <- coda::as.array.mcmc.list(jpos,chains = TRUE)
+# 
+# 
+# waic_arr <- waic(jpos_matrix)
+# waic_mat <- waic(jpos_array)
+# identical(waic_arr, waic_mat)
 
 plot(jpos) # check convergence
 
@@ -101,6 +121,18 @@ mcmcDF %>%
   ggplot(aes(value)) +
   facet_wrap(~ key, scales = "free") +
   geom_density()
+
+
+## extract log liklihood
+logLik <- mcmcMatrix[,12:74]
+
+## Caclulate WAIC and LOO for loo package
+waic <- waic(logLik)
+waic
+loo <- loo(logLik)
+loo
+plot(loo,label_points = TRUE)
+
 
 ################################################################################
 ## Create point estimates for all parameters

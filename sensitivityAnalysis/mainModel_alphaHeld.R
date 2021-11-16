@@ -39,6 +39,7 @@ seropos_est[i] <- ifelse(age[i] < cutoff,
 ((lambdaShao_22 / (lambdaShao_22+delta))* (1-exp(-(lambdaShao_22 +delta)*cutoff)) 
 - ((lambdaShao_22*alpha) / ((lambdaShao_22*alpha)+delta) )) * exp(-((lambdaShao_22*alpha) + delta)*(age[i]-cutoff)) 
 + ((lambdaShao_22*alpha) / ((lambdaShao_22*alpha)+delta)))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 7:13){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
@@ -49,6 +50,7 @@ seropos_est[i] <- ifelse(age[i] < cutoff,
 ((lambdaZhou_22 / (lambdaZhou_22+delta))* (1-exp(-(lambdaZhou_22 +delta)*cutoff)) 
 - ((lambdaZhou_22*alpha) / ((lambdaZhou_22*alpha)+delta) )) * exp(-((lambdaZhou_22*alpha) + delta)*(age[i]-cutoff)) 
 + ((lambdaZhou_22*alpha) / ((lambdaZhou_22*alpha)+delta)))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 14:19){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
@@ -59,6 +61,7 @@ seropos_est[i] <- ifelse(age[i] < cutoff,
 ((lambdaCav / (lambdaCav+delta))* (1-exp(-(lambdaCav +delta)*cutoff)) 
 - ((lambdaCav*alpha) / ((lambdaCav*alpha)+delta) )) * exp(-((lambdaCav*alpha) + delta)*(age[i]-cutoff)) 
 + ((lambdaCav*alpha) / ((lambdaCav*alpha)+delta)))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 20:26){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
@@ -69,6 +72,7 @@ seropos_est[i] <- ifelse(age[i] < cutoff,
 ((lambdaChan / (lambdaChan+delta))* (1-exp(-(lambdaChan +delta)*cutoff)) 
 - ((lambdaChan*alpha) / ((lambdaChan*alpha)+delta) )) * exp(-((lambdaChan*alpha) + delta)*(age[i]-cutoff)) 
 + ((lambdaChan*alpha) / ((lambdaChan*alpha)+delta)))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 27:33){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
@@ -79,6 +83,7 @@ seropos_est[i] <- ifelse(age[i] < cutoff,
 ((lambdaZhou_hk / (lambdaZhou_hk+delta))* (1-exp(-(lambdaZhou_hk +delta)*cutoff)) 
 - ((lambdaZhou_hk*alpha) / ((lambdaZhou_hk*alpha)+delta) )) * exp(-((lambdaZhou_hk*alpha) + delta)*(age[i]-cutoff)) 
 + ((lambdaZhou_hk*alpha) / ((lambdaZhou_hk*alpha)+delta)))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 34:40){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
@@ -90,6 +95,7 @@ seropos_est[i] <- ifelse(age[i] < cutoff,
 ((lambdaZhou_oc / (lambdaZhou_oc+delta))* (1-exp(-(lambdaZhou_oc +delta)*cutoff)) 
 - ((lambdaZhou_oc*alpha) / ((lambdaZhou_oc*alpha)+delta) )) * exp(-((lambdaZhou_oc*alpha) + delta)*(age[i]-cutoff)) 
 + ((lambdaZhou_oc*alpha) / ((lambdaZhou_oc*alpha)+delta)))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 41:46){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
@@ -101,6 +107,7 @@ seropos_est[i] <- ifelse(age[i] < cutoff,
 ((lambdaMonto / (lambdaMonto+delta))* (1-exp(-(lambdaMonto +delta)*cutoff)) 
 - ((lambdaMonto*alpha) / ((lambdaMonto*alpha)+delta) )) * exp(-((lambdaMonto*alpha) + delta)*(age[i]-cutoff)) 
 + ((lambdaMonto*alpha) / ((lambdaMonto*alpha)+delta)))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 47:50){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
@@ -112,6 +119,7 @@ seropos_est[i] <- ifelse(age[i] < cutoff,
 ((lambdaSar / (lambdaSar+delta))* (1-exp(-(lambdaSar +delta)*cutoff)) 
 - ((lambdaSar*alpha) / ((lambdaSar*alpha)+delta) )) * exp(-((lambdaSar*alpha) + delta)*(age[i]-cutoff)) 
 + ((lambdaSar*alpha) / ((lambdaSar*alpha)+delta)))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 51:57){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
@@ -123,6 +131,7 @@ seropos_est[i] <- ifelse(age[i] < cutoff,
 ((lambdaZhou_nl / (lambdaZhou_nl+delta))* (1-exp(-(lambdaZhou_nl +delta)*cutoff)) 
 - ((lambdaZhou_nl*alpha) / ((lambdaZhou_nl*alpha)+delta) )) * exp(-((lambdaZhou_nl*alpha) + delta)*(age[i]-cutoff)) 
 + ((lambdaZhou_nl*alpha) / ((lambdaZhou_nl*alpha)+delta)))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 for (i in 58:63){ 
 n.pos[i] ~ dbinom(seropos_est[i],N[i]) #fit to binomial data
@@ -134,6 +143,7 @@ seropos_est[i] <- ifelse(age[i] < cutoff,
 ((lambdaShao_nl / (lambdaShao_nl+delta))* (1-exp(-(lambdaShao_nl +delta)*cutoff)) 
 - ((lambdaShao_nl*alpha) / ((lambdaShao_nl*alpha)+delta) )) * exp(-((lambdaShao_nl*alpha) + delta)*(age[i]-cutoff)) 
 + ((lambdaShao_nl*alpha) / ((lambdaShao_nl*alpha)+delta)))
+loglik[i] <- logdensity.bin(n.pos[i],seropos_est[i],N[i])
 }
 
 
@@ -155,7 +165,7 @@ alpha ~ dgamma(5,5)
 cutoff ~ dunif(0,20)
 }"
 
-paramVector = c("lambdaShao_22", "lambdaZhou_22", "lambdaCav", "lambdaChan", "lambdaZhou_hk", "lambdaZhou_oc", "lambdaMonto", "lambdaSar", "lambdaZhou_nl", "lambdaShao_nl","delta","alpha","cutoff")
+paramVector = c("lambdaShao_22", "lambdaZhou_22", "lambdaCav", "lambdaChan", "lambdaZhou_hk", "lambdaZhou_oc", "lambdaMonto", "lambdaSar", "lambdaZhou_nl", "lambdaShao_nl","delta","alpha","cutoff","loglik")
 
 mcmc.length=100000
 jdat <- list(n.pos= datComb$N_positive,
@@ -188,6 +198,16 @@ saveRDS(mcmcAlpha, "plots/mcmcAlphaPostAll.RDS")
 
 # Calculate DIC
 dic.samples(jmod, n.iter = mcmc.length)
+
+## extract log liklihood
+logLik <- mcmcMatrix[,14:76]
+
+## Caclulate WAIC and LOO for loo package
+waic <- waic(logLik)
+waic
+loo <- loo(logLik)
+loo
+plot(loo,label_points = TRUE)
 
 ################################################################################
 ## Create point estimates for all parameters

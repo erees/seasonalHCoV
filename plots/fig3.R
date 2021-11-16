@@ -33,4 +33,5 @@ fig3b <- createFig3b(cutoff = cutoff,
                      lambda = lambda,
                      alpha = alpha)
 
-plot_grid(fig3a,fig3b,labels = c('A', 'B'))
+
+fig3 <- plot_grid(fig3a,fig3b,labels = c('A', 'B'))

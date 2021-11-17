@@ -18,6 +18,7 @@ Several sensitivity analyses were conducted, and these are located in the folder
 * `mainModel_strain.R` (Waning is estimated for each strain, instead of jointly estimated across all studies and strains)
 * `mainModel_widePrior.R` (the same as the main model, but a less informed prior is used for the FOI)
 * `reverseCatalyticModel.R` (Simple reverse catalytic model, with no age-varying FOI).
+* `mainModel_assay.R` (Waning is estimated for each assay, instead of jointly estimated across all studies and strains).
 * SensitivityAnalysisTwoStrains (Folder containing scripts for the two strain analysis where only half the data is used.
 
 There is also folder containing code used to create Figure 2 and Figure 3 in "plots". 
